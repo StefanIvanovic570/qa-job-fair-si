@@ -4,6 +4,7 @@ public class AttackCard implements Card {
     private int number;
 
     public AttackCard(int number) {
+
         this.number = number;
     }
 

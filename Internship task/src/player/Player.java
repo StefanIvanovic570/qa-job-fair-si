@@ -1,31 +1,31 @@
 package player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import cards.*;
 
 public class Player {
 
     private int health;
-    private List<Card> hand;
-    private List<Card> deck;
-    private Card lastPlayedCard;
-    private static int initialNumberOfCards = 6;
+    private List<Card> hand;        // karte u ruci
+    private List<Card> deck;        // karte u decku
+    private Card lastPlayedCard;          //poslednja odigrana
+    private static int initialNumberOfCards = 6;        // broj karata na pocetku
     private boolean attackingStatus; 
-    private int damage;
+    private int damage; // kolicina stete
 
-    public Player(int health, List<Card> deck) {
+    public Player(int health, List<Card> deck) {  //konstruktor za Player klasu.
         this.health = health;
         this.deck = deck;
         this.hand = new ArrayList<>();
         lastPlayedCard = null;
         attackingStatus = false;
         damage = 0;
-        shuffleDeck();
+        shuffleDeck();             // metoda za mesanje karata
     }
 
-    public void takeDamage(int amountOfDamage){
-        health = amountOfDamage;
+    public void takeDamage(int amountOfDamage){health -= amountOfDamage;
     }
 
     public boolean getAttackingStatus(){
@@ -41,7 +41,7 @@ public class Player {
     }
 
     public void resetDamage(){
-        damage = damage;
+        damage = 0;
     }
 
     public int getHealth() {
@@ -65,7 +65,7 @@ public class Player {
     }
 
     public void shuffleDeck() {
-        return;
+        Collections.shuffle(deck);
     }
 
     public void populateDeck(List<Card> cardList) {
@@ -81,8 +81,12 @@ public class Player {
     }
 
     public void drawCard() {
+        if (!deck.isEmpty()) {
             Card drawnCard = deck.remove(deck.size() - 1);
-            hand.add(drawnCard); 
+            hand.add(drawnCard);
+        } else {
+            System.out.println("The deck is empty. Unable to draw a card.");
+        }
     }
 
     public void drawInitialCards() {
@@ -94,26 +98,30 @@ public class Player {
     public void playCard(int cardNumber) {
         Card cardToPlay = null;
         for (Card card : hand) {
-            if (card.getNumber() == cardNumber) {
+            if (hand.indexOf(card)+1 == cardNumber) {
                 cardToPlay = card;
                 break;
             }
         }
+        if (cardToPlay != null) {
             hand.remove(cardToPlay);
             cardToPlay.effect();
-         
+
             lastPlayedCard = cardToPlay;
 
-            if(cardToPlay instanceof AttackCard){
+            if (cardToPlay instanceof AttackCard) {
                 attackingStatus = true;
                 damage += cardToPlay.getNumber();
             }
-            if(cardToPlay instanceof BoostAttackCard){
+            if (cardToPlay instanceof BoostAttackCard) {
                 attackingStatus = true;
-                damage += ((BoostAttackCard)cardToPlay).getBoost();
+                damage += ((BoostAttackCard) cardToPlay).getBoost();
             }
-        
-       
+        }
+        else {
+            System.out.println("Invalid card number. Please enter a valid card number.");
+        }
+
     }
 
     public void playCardInDefense(int cardNumber){

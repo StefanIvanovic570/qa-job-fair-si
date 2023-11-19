@@ -26,7 +26,7 @@ public class Game {
     }
 
     private boolean hasHealth(Player player){
-        return player.getHealth() != 0;
+        return player.getHealth() >= 0;
     }
 
     private boolean isHandEmpty(Player player){
